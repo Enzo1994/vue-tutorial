@@ -22,7 +22,7 @@ vue init 模板名 项目名
   ★  webpack-simple - A simple Webpack + vue-loader setup for quick prototyping.
 ```
 ###### build
-打包发布组件
+打包发布组件 (打包后会在根目录生成dist文件夹，里面包括加密后的完整项目html js css文件)
 ###### help
 ```vue help init```
 
@@ -33,7 +33,7 @@ To get started:
   npm run build  发布打包  自动生成dist目录，所有文件打包加密 css js html
   
   
-
+```json
  "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
@@ -43,9 +43,21 @@ To get started:
     "vue": "2.5.16",
     "vue-router": "3.0.1"
   },
+ ```
  
- 
- 
+ ## webpack模板工程结构:
+
+* build
+  + webpack设置文件
+* config
+  + 工程设置文件
+* src
+  + 源文件
+* static
+  + 静态文件夹(编译时直接拷贝至发布文件夹)
+* index.html
+  + 网页启动入口文件,头部可以改适应爬虫
+  
  
 ## 往工程内引入bootstrap
 ```cd myweb```
@@ -122,18 +134,7 @@ style:组件样式单
 
 
 
-## webpack模板工程结构:
 
-* build
-  + webpack设置文件
-* config
-  + 工程设置文件
-* src
-  + 源文件
-* static
-  + 静态文件夹(编译时直接拷贝至发布文件夹)
-* index.html
-  + 网页启动入口文件,头部可以改适应爬虫
   
   
 ## 路由vue-router
