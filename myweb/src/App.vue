@@ -4,7 +4,9 @@
     <hr>
     <button class = "btn btn-primary">确定</button>
     <hr>
-
+ <router-link to="/">Home</router-link>
+ <router-link to="/news">新闻页面</router-link>
+ <router-link to="/about">关于页面</router-link>
       <hr>
 
     <router-view/>
