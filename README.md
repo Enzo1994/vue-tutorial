@@ -184,9 +184,9 @@ new Vue({
 ##### 使用：
 ###### 第一步：
 components文件夹下三个组件文件：
-HelloWorld.vue  写点内容以示区分：```<h1>HelloWorld</h1>```
-News.vue  写点内容以示区分：```<h1>News Page</h1>```
-About.vue  写点内容以示区分：```<h1>About Page</h1>```
+HelloWorld.vue  写点内容以示区分：```<h1>HelloWorld</h1>```  
+News.vue  写点内容以示区分：```<h1>News Page</h1>```  
+About.vue  写点内容以示区分：```<h1>About Page</h1>``` 
 
 ###### 第二步：router/index.js(路由设置文件)：把组件做url映射
 ```javascript
