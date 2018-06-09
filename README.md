@@ -1,3 +1,5 @@
+ 
+
 ## 安装vue-cli:
 ```
 show vue-cli 看版本
@@ -45,6 +47,7 @@ To get started:
   },
  ```
  
+
  ## webpack模板工程结构:
 
 * build
@@ -57,33 +60,39 @@ To get started:
   + 静态文件夹(编译时直接拷贝至发布文件夹)
 * index.html
   + 网页启动入口文件,头部可以改适应爬虫
-  
+
+
  
 ## 往工程内引入bootstrap
+
+##### 安装：
 ```cd myweb```
+```npm install bootstrap --save --save-exact```  ==--save-exact在生产环境中必须写==
 
-安装```npm install bootstrap --save --save-exact```  ==--save-exact在生产环境中必须写==
-
+##### 引入：
 在src的main.js内引入```import 'bootstrap/dist/css/bootstrap.min.css```
 
+##### 使用：
 在src下的App.vue内使用```<button class = "btn btn-primary">确定</button>```
 
 
 
 
 ## 往工程内安装axios
+
+
+##### 安装：
 ```cd myweb```
+```npm install --save --save-exact axios vue-axios```
 
-安装```npm install --save --save-exact axios vue-axios```
-
-在src的main.js内引入
+##### 引入：在src的main.js内引入
 ```
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios,axios)  //注册到vue全局组件，使所有组件都可以使用axios库 
 ```
 
-在src下的components下组件HelloWorld.vue内使用
+##### 使用：在src下的components下组件HelloWorld.vue内使用
 ```javascript
 <template>
   <div class="hello">
@@ -114,27 +123,125 @@ export default {
 ```
 
 ## 自定义css文件
+##### 创建：
 css文件在src目录的assets文件夹下新建my.css ```cd assets  touch my.css```
-
+##### 引入：
 ```
-<script>
+<script>  //组件的script标签内
 import '../assets/my.css'
 </script>
 ```
 
 
-## 组件:
+## 往工程内安装静态路由vue-router
+##### 简介：
+所有组件路由都写到src/router/index.js文件下
+
+##### 安装：
+```cd myweb```
+```npm install vue-router --save --save-exact```
+
+##### 引入：
+###### src/router/index.js(自动完成) 路由设置文件
+```javscript
+import Vue from 'vue'
+import Router from 'vue-router'
+import HelloWorld from '@/components/HelloWorld'
+
+Vue.use(Router)  //注册到全局，让所有组件都能用
+
+export default new Router({  //定义url映射
+  routes: [
+    {
+      path: '/',
+      name: 'HelloWorld',  
+      component: HelloWorld
+    }
+  ]
+})
+```
+###### src/main.js(自动完成)
+```
+import Vue from 'vue'
+import App from './App'
+import router from './router'  //相对路径请注意
+import 'bootstrap/dist/css/bootstrap.min.css'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+Vue.use(VueAxios,axios)
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  comments:{ App },
+  render: h => h(App)
+})
+```
+
+##### 使用：
+###### 第一步：
+components文件夹下三个组件文件：
+HelloWorld.vue  写点内容以示区分：<h1>HelloWorld</h1>
+News.vue  写点内容以示区分：<h1>News Page</h1>
+About.vue  写点内容以示区分：<h1>About Page</h1>
+
+###### 第二步：router/index.js(路由设置文件)：把组件做url映射
+```javascript
+import Vue from 'vue'
+import Router from 'vue-router'
+import HelloWorld from '@/components/HelloWorld'
+import About from '@/compornts/About'  //引入组件文件
+import News from '@/compornts/News'   //引入组件文件
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',   //根url对应helloworld组件
+      name: 'HelloWorld',
+      component: HelloWorld
+    },
+    {
+      path: '/about',
+      name: 'About',
+      component: About
+    },
+    {
+      path: '/news',
+      name: 'News',
+      component: News
+    }
+  ]
+})
+```
+###### 第三步：写跳转按钮(比如写在App.vue内)
+```html
+<!-- 使用router-link组件来导航 -->
+<!-- 通过传入 ·to· 属性指定链接 -->
+<!-- <router-link> 默认会渲染成<a>标签 -->
+ <router-link to="/">Home</router-link>
+ <router-link to="/news">新闻页面</router-link>
+ <router-link to="/about">关于页面</router-link>
+
+<!-- 路由出口：路由匹配组件再此渲染（不同被路由组件内容出现在这里） -->
+ <router-view/>
+```
+
+## 动态路由：
+###### 简介：
+动态路由是指给路由加入参数：player/id=1 
+
+###### 使用：
+
+
+ ## 组件:
 ###### 组件位置:
 所有组件都在src/components文件夹下
 
 ###### 组件格式:  
 template:html内容  
 script:js脚本(ES6)   
-style:组件样式单   
-
-
-
-
-  
-  
-## 路由vue-router
+style:组件样式单 
