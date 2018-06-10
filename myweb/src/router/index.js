@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import About from '@/components/About'  //引入组件文件
 import News from '@/components/News'   //引入组件文件
+import userId from '@/components/userId'
 Vue.use(Router)
 
 export default new Router({
@@ -21,6 +22,11 @@ export default new Router({
       path: '/news',
       name: 'News',
       component: News
+    },
+    {
+      path:'/userId/:id',
+      name:'userId',
+      component:userId
     }
   ]
 })

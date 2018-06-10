@@ -231,10 +231,67 @@ export default new Router({
 ```
 
 ## 动态路由：
-###### 简介：
-动态路由是指给路由加入参数：player/id=1 
+##### 简介：
+动态路由是指给路由加入参数（只是参数数据变化，其他固定不变）：player/id=1 
 
-###### 使用：
+##### 使用：
+###### 第一步：设置router文件（router/index.js）：
+```javascript
+import userId from '@/components/userId'
+
+export default new Router({
+  routes:[
+    ...
+    {
+      path:'userId/:id',  //规定参数名
+      name:'userId',
+      component:userId
+    }
+  ]
+})
+```
+
+###### 第二步：发出参数（App.vue）
+
+```javascript
+<router-link to = "userId/1">我是1号用户</router-link>
+<router-link to = "userId/2">我是2号用户</router-link>
+<router-link to = "userId/3">我是3号用户</router-link>
+<router-view/>
+```
+###### 第二步：接收参数(userId.vue)
+```javascript
+<template>
+  <div>
+    <h1>您是{{id}}号用户</h1>
+  </div>
+</template>
+<script>
+  export default{
+    name:"userId",
+    data(){
+      return{
+        id:""
+      }
+    },
+    mounted(){
+      //接受url参数id
+      this.id = this.$route.params.id  //获取参数语法
+    },
+    beforeRouteUpdate(to,from,next){  //更新路由参数方法
+      this.id = to.params.id    //to存的是最新路由
+      next()
+    }
+  }
+</script>
+```
+
+
+## 嵌套路由：
+##### 简介：
+嵌套路由是指在动态路由的基础上再加上嵌套url（也就是组件），比如:/userId/3/profile (/userId/:id/*)
+
+##### 使用：
 
 
  ## 组件:
