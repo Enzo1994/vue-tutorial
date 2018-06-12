@@ -76,6 +76,14 @@ To get started:
 在src下的App.vue内使用```<button class = "btn btn-primary">确定</button>```
 
 
+ ## 组件:
+###### 组件位置:
+所有组件都在src/components文件夹下
+
+###### 组件格式:  
+template:html内容  
+script:js脚本(ES6)   
+style:组件样式单 
 
 
 ## 往工程内安装axios
@@ -126,7 +134,7 @@ export default {
 ##### 创建：
 css文件在src目录的assets文件夹下新建my.css ```cd assets  touch my.css```
 ##### 引入：
-```
+```JavaScript
 <script>  //组件的script标签内
 import '../assets/my.css'
 </script>
@@ -143,7 +151,7 @@ import '../assets/my.css'
 
 ##### 引入：
 ###### src/router/index.js(自动完成) 路由设置文件
-```javscript
+```JavaScript
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
@@ -161,7 +169,7 @@ export default new Router({  //定义url映射
 })
 ```
 ###### src/main.js(自动完成)
-```
+```JavaScript
 import Vue from 'vue'
 import App from './App'
 import router from './router'  //相对路径请注意
@@ -232,20 +240,30 @@ export default new Router({
 
 ## 动态路由：
 ##### 简介：
-动态路由是指给路由加入参数（只是参数数据变化，其他固定不变）：player/id=1 
+动态路由是指给路由加入参数（只是参数数据变化，其他固定不变）：player/id=1 player组件传入参数不一样，显示内容也不一样
+
+* 关键内容：
+  - 
+  ```
+  beforeRouteUpdate(to,from,next){  //更新路由参数方法
+      this.detail = this.getPlayer(to.params.id)    //to存的是最新路由
+      next()
+    },
+  ```
+  - ```this.$route.params.uid```
 
 ##### 使用：
 ###### 第一步：设置router文件（router/index.js）：
 ```javascript
-import userId from '@/components/userId'
+import Player from '@/components/Player'
 
 export default new Router({
   routes:[
     ...
     {
-      path:'userId/:id',  //规定参数名
-      name:'userId',
-      component:userId
+      path:'Player/:uid',  //规定参数名
+      name:'Player',
+      component:Player
     }
   ]
 })
@@ -254,12 +272,13 @@ export default new Router({
 ###### 第二步：发出参数（App.vue）
 
 ```javascript
-<router-link to = "userId/1">我是1号用户</router-link>
-<router-link to = "userId/2">我是2号用户</router-link>
-<router-link to = "userId/3">我是3号用户</router-link>
+<router-link to = "Player/1">保罗</router-link>
+<router-link to = "Player/2">哈登</router-link>
+
 <router-view/>
 ```
-###### 第二步：接收参数(userId.vue)
+
+###### 第二步：接收参数(Player.vue)
 ```javascript
 <template>
   <div>
@@ -268,19 +287,29 @@ export default new Router({
 </template>
 <script>
   export default{
-    name:"userId",
+    name:"Player",
     data(){
       return{
-        id:""
+        detail:{}
       }
     },
-    mounted(){
-      //接受url参数id
-      this.id = this.$route.params.id  //获取参数语法
+    mounted() {
+      //接受url参数uid
+      this.detail = this.getPlayer(this.$route.params.uid)  //获取参数语法
     },
     beforeRouteUpdate(to,from,next){  //更新路由参数方法
-      this.id = to.params.id    //to存的是最新路由
+      this.detail = this.getPlayer(to.params.id)    //to存的是最新路由
       next()
+    },
+    methods:{
+      getPlayer(uid){
+        switch (uid) {
+          case 1:
+            return {uid: 1,name:'保罗',point:26}
+          case 2:
+            return {uid: 2,name:'哈登',point:26}
+        }
+      }
     }
   }
 </script>
@@ -289,16 +318,212 @@ export default new Router({
 
 ## 嵌套路由：
 ##### 简介：
-嵌套路由是指在动态路由的基础上再加上嵌套url（也就是组件），比如:/userId/3/profile (/userId/:id/*)
+嵌套路由是指在动态路由的基础上再加上嵌套url（也就是组件），比如:/Player/3/profile (/Player/:uid/*)
 
 ##### 使用：
+###### 第一步：设置router文件 (router/index.js)
+```javascript
+import PlayerProfile from '@/components/Player/Profile'
+import PlayerStats from '@/components/Player/Stats'
+...
+  {
+      path:'/Player/:uid',
+      name:'Player',
+      component:Player，
+      children:[
+        {
+          path:'profile',
+          component:PlayerProfile
+        },
+        {
+          path:'stats',
+          component:PlayerStats
+        }
+      ]
+  }
+
+```
 
 
- ## 组件:
-###### 组件位置:
-所有组件都在src/components文件夹下
+###### 第二步：设置子组件( /Player/Profile.vue 和 /Player/Stats.vue )
+* Profile.vue:
+```html
+<template>
+  <div>
+    <h2>球员简介：{{this.$route.params.uid}}</h2>
+  </div>
+</template>
+```
 
-###### 组件格式:  
-template:html内容  
-script:js脚本(ES6)   
-style:组件样式单 
+* Stats.vue:
+```html
+<template>
+  <div>
+    <h2>球员数据：{{this.$route.params.uid}}</h2>
+  </div>
+</template>
+```
+
+###### 第三步：设置跳转标签router-link （Player.vue）：
+```html
+<template>
+  <div>
+    <h2>球员列表：</h2>
+    <ul>
+      <li>编号：{{detail.uid}}</li>
+      <li>姓名：{{detail.name}}</li>
+      <li>得分：{{detail.point}}</li>
+    </ul>
+    <router-link :to = "profile">简介 </router-link>  <!--:to相当于绑定href值为data里面属性，属性设置跳转到的子路由-->
+    <router-link :to = "stats">数据 </router-link>
+    <router-view></router-view>
+  </div>
+</template>
+```
+```javascript
+<script>
+export default {
+  name: "Player",
+  data() {
+    return {
+      detail: {},
+      profile: "",
+      stats: ""
+    };
+  },
+  mounted() {
+    this.detail = this.getPlayer(this.$route.params.uid);
+
+    this.profile = `/player/${this.$route.params.uid}/profile`; //显示的是传给profile子组件uid值以后把显示了数据的子组件profile显示出来
+    this.stats = `/player/${this.$route.params.uid}/stats`; 
+  },
+  beforeRouteUpdate(to, from, next) {
+    //更新路由参数方法
+    this.detail = this.getPlayer(to.params.uid); //to存的是最新路由
+
+    this.profile = `/player/${to.params.uid}/profile`;  
+    this.stats = `/player/${to.params.uid}/stats`;  
+
+    next();
+  },
+  methods: {
+    getPlayer(uid) {
+      switch (uid) {
+        case "1":
+          return { uid: 1, name: "保罗", point: 26 };
+        case "2":
+          return { uid: 2, name: "哈登", point: 22 };
+      }
+    }
+  }
+};
+</script>
+```
+
+
+## 路由编程：
+##### 模板内路由编程方法： 
+:to 接一个对象
+```<router-link :to="{name:'Player',params:{uid:1}}">库里</router-link>```
+```<router-link :to="{path:"/player/2/stats}">哈登</router-link>```
+##### js标签内路由编程方法： 注意uid的数据类型
+需要给模板内按键方法@click = "btnClick(uid)" 传参
+```this.$router.push({path:`/player/${uid}`})```
+```this.$router.push({path:`/player/${uid}/stats`})```
+```this.$router.push({name:"Player",params:{uid:uid}})```
+```this.$router.push({path:"/player",query:{uid:uid}})``` //get串写法
+//前进后退导航：
+```this.$router.go(1)```
+
+
+## 拼图：
+##### 简介：
+为一个页面（路由）组合多个组件
+
+##### 使用：
+###### 第一步：设置router文件 (router/index.js)
+```javascript
+import SettingDetail from '@/components/setting/detail'
+import SettingHeader from '@/components/setting/header'
+import SettingSidebar from '@/components/setting/sidebar'
+
+...
+  routes:[
+    {
+      path:'/'.
+      name:'Home',
+      components:{   //关键加s
+        myDetail:SettingDetail,
+        myHeader:SettingHeader,
+        mySidebar:SettingSidebar
+      }
+    }
+  ]
+...
+```
+
+###### 第二步：路由页面设置：
+```html
+<div style = "...">
+<router-view name = "myDetail"></router-view>
+</div>
+```
+
+
+## URL重定向：
+路由别名 alias
+
+##### 使用：
+* 不同路劲可以访问同一个路由，用alias
+```javascript
+import About from '/about' 
+{
+  path:'/about',
+  name:'About',
+  component:About,
+  alias:'/aboutme'
+}
+```
+* 访问 /curry 可以重定向至 /player/1
+```javascript
+{
+  path:'/curry',
+  redirect:'/player/1',
+  redirect:{name:'About'} //重定向到组件
+  }
+```
+
+
+## 多参数路由
+路由属性：props
+
+##### 使用：
+###### 第一步：设置router文件 (router/index.js)
+```javaScript
+import User from '@/components/User'
+...
+{
+  path:'user/:uid/:nationality',
+  name:'User',
+  component:User,
+  props:true  // 1/2
+}
+```
+###### 第二步： 设置路由组件（components/User.vue）
+* 通过props属性接收路由传过来的数据
+```javascript
+<template>
+  <div>{{uid}},{{nationality}}</div>
+</template>
+
+<script>
+export default {
+  name:'User',
+  props:['uid','nationality']  // 2/2
+}
+</script>
+```
+###### 第三步：开始跳转：
+```
+<router-link to="/user/1/usa">美国用户</router-link>
+```

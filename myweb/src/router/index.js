@@ -3,7 +3,9 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import About from '@/components/About'  //引入组件文件
 import News from '@/components/News'   //引入组件文件
-import userId from '@/components/userId'
+import Player from '@/components/Player'
+import PlayerProfile from '@/components/Player/Profile'
+import PlayerStats from '@/components/Player/Stats'
 Vue.use(Router)
 
 export default new Router({
@@ -24,10 +26,20 @@ export default new Router({
       component: News
     },
     {
-      path:'/userId/:id',
-      name:'userId',
-      component:userId
-    }
+      path:'/Player/:uid',
+      name:'Player',
+      component:Player,
+      children:[
+        {
+          path:'profile',
+          component:PlayerProfile
+        },
+        {
+          path:'stats',
+          component:PlayerStats
+        }
+      ]
+  }
   ]
 })
 
