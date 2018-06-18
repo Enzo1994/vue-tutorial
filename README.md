@@ -1,4 +1,300 @@
- 
+渐进 响应式
+第一步：需要new Vue一个根实例作为入口，挂载到body（已作废）
+
+
+实例对象包含构造参数：el 、 template 、 data 、 method
+var my = new Vue({    el:'#app-4',    template:'<b>{{black}}</b>',    data:{        black:'RealBlack'    },    methods:{}})
+第二步：把指令写到template里
+注意Build-in components
+
+1、修改innerHTML:{{message}}
+2、修改标签内属性:v-bind:'style'， :class＝"{类名:第几个list（index％2）}"
+3、给DOM元素绑定事件: html:v-on:click = 'reverseMessage' , js: app.methods.reverseMessage=function(){}
+4、条件：html：v-if="seen" 
+5、循环：html：
+针对data里的数组：v-for="(item,index) in list"，标签内写{{text}} 
+针对data里的对象：v-for="(value,key) in objList" 
+app4.todos.push({ text: '新项目' })添加新li
+6、输入内容：html：（读取输入的内容in input tag）v-model="nba"，js：data：nba：‘此处同placeholder’
+一、文本插值（innerHTML）
+v-html：会识别标签
+v-text：不会识别标签
+二、绑定HTML元素属性（setAttribute）
+
+- 数据绑定：
+**{{msg}}**：更新数据变化
+**{{msg|filterA|filterB}}**：filter:lowercase/uppercase/capitalize/currency '￥'  - currency可通过空格传参以在开头显示 / 
+**{{*msg}}**：更新数据变化
+
+
+
+- v-bind绑定html属性：
+```javascript
+<div id="app-2">
+  <span v-bind:title="message">   //渲染出来结果是<span title="this is title"></span>
+  </span>
+</div>
+
+var app2 = new Vue({
+    el: '#app-2',
+    data: {
+      message: 'this is title'
+    }})
+```
+v-bind称为指令
+将这个元素节点的 title 特性和 Vue 实例的 message 属性保持一致
+还有其他指令：
+
+- v-show、v-if隐藏显示
+控制切换一个元素是否显示：
+```javascript
+<div id="app-3">
+  <p v-if="seen">现在你看到我了</p>
+</div>
+
+var app3 = new Vue({
+    el: '#app-3',  
+    data: { 
+         seen: true  }})
+```
+
+- v-for循环：
+  * 数组循环：v-for =“(v,i) in arr” 
+    {{value}}
+  * json循环：
+    - v-for =“(v,k,i) in json“
+    - {{k}} {{v}}
+  * filter：
+    - limitBy 2 1- 取2个，从index 1开始
+    - filterBy '谁' - 过滤数据，得到包含 谁 的数据
+    - orderBy
+一个项目列表：
+```javascript
+<div id="app-4">
+  <ol>
+      <li v-for="todo in todos">
+            {{ todo.text }}
+      </li>
+  </ol>
+</div>
+
+var app4 = new Vue({
+    el: '#app-4',
+    data: {
+      todos: [
+        { text: '学习 JavaScript' },
+        { text: '学习 Vue' },
+        { text: '整个牛项目' }
+        ]}})
+```
+
+
+- v-on绑定事件：mouseover mouseout dblclick
+```javascript
+<button @click="a=false"> 点击消失
+</button>
+<div id="app-5">
+  <p>{{ message }}</p>
+    <button v-on:keydown.enter="reverseMessage">逆转消息</button>
+</div>
+
+var app5 = new Vue({
+    el: '#app-5',
+    data: {    
+      message: 'Hello Vue.js!'  
+      },  methods: {    
+        reverseMessage: function () {      
+          this.message = this.message.split('').reverse().join('')    
+          }}})
+```
+
+- v-model双向绑定：
+```javascript
+<div id="app-6">
+  <p>{{ message }}</p>
+    <input v-model="message">
+</div>
+var app6 = new Vue({
+    el: '#app-6', 
+    data: {    
+      message: 'Hello Vue!'  
+      }})
+```
+
+- 交互：
+get/post/jsonp
+**创建axios实例：**
+```javaScript
+var instance = axios.create({
+baseURL: 'https://some-domain.com/api/',
+timeout: 1000,
+headers: {'X-Custom-Header': 'foobar'}
+});
+```
+**获取数据：**
+
+## Vue生命周期： v-1.0
+- 钩子函数：
+  - created函数：渲染html和路由前执行-此时静态页面占位数据还未被替换
+  - mounted函数：渲染html和路由后执行-ajax或数据初始化以后，用实际数据覆盖掉占位数据以后
+
+## cloak：
+办法一：`<span v-text="msg"></span>`
+办法一：`<span v-html="msg"></span>`
+方法二：`<span v-cloak>{{msg}}</span>` + `[v-cloak]{display:none}`
+
+## computed计算属性：是属性，return的值就是计算属性的值，可以和其他属性联动
+```javascript
+data(){
+  return {
+    a:3
+  } 
+},
+computed:{
+  b:function(){  //这是默认的get方法
+    return 1
+  }
+}
+```
+```javascript
+data(){
+  return {
+    a:3
+  } 
+},
+computed:{
+  b:{
+    get:function(){  //这是默认的get方法
+      return 1
+    },
+    set:function(val){
+
+    }
+  }
+}
+```
+
+## 自定义过滤器：
+- “ | ”能将上一个过滤器输出内容作为下一个过滤器的输入内容。（`<div>{{ content | reverseStr | removeNum }}</div>`）
+```javascript
+//全局注册vue过滤器，
+Vue.filter('filtername',function(input,a,b){ //input:过滤器'|'前的内容，a、b：过滤器的参数：{{input | filtre a b}}
+  return input>3?2:1
+})
+```
+- 举例：
+  - 时间转换器，
+  - 标签过滤器：
+    ```javascript
+      Vue.filter('filterHtml',{ 
+          read:function(val){  /*val是读到的html值*/
+              return val.replace(/<[^<]+>/g);
+          },
+          write:function(){
+              return val;
+          }
+      });
+    ```
+**Vue2.0的过滤器写法：**
+```javascript
+<div id="app">  
+    <span>SearchByName: </span>  
+    <input v-model="searchQuery">  
+    <table>  
+        <thead>  
+        <tr>  
+            <td v-for="col in columns">{{col|capitalize}}</td>  
+        </tr>  
+        </thead>  
+        <tbody>  
+        <tr v-for="entry in filteredData">  
+            <td v-for="col in columns">{{entry[col]}}</td>  
+        </tr>  
+        </tbody>  
+    </table>  
+</div>  
+<script src="vue.js"></script>  
+<script>  
+    new Vue({  
+        el: '#app',  
+        data: {  
+            searchQuery: '',  
+            columns: ['name', 'gender', 'age'],  
+            data: [{  
+                name: 'Jack',  
+                gender: 'male',  
+                age: 26  
+            }, {  
+                name: 'John',  
+                gender: 'female',  
+                age: 20  
+            }, {  
+                name: 'Lucy',  
+                gender: 'female',  
+                age: 16  
+            }]  
+        },  
+        filters: {  
+            capitalize: function (value) {   //方法一：用filters
+                return value.charAt(0).toUpperCase() + value.slice(1);  
+            }  
+        },  
+        computed: {  
+            filteredData: function () {  
+                var self = this;  
+                return this.data.filter(function (item) {  
+                    return item.name.toLowerCase().indexOf(self.searchQuery.toLowerCase()) !== -1;  
+                })  
+            }  
+        }  
+    });  
+</script>  
+```
+
+
+## 自定义指令：
+拖拽只能放到指令里
+```javascript
+<div v-drag></div>
+Vue.directive('drag',function(){
+  var oDiv = this.el //原生DOM元素
+  oDiv.onmousedown = function(e){
+    var disX = e.clientX-oDiv.offsetLeft;
+    var disY = e.clientY-oDiv.offsetTop;
+    document.onmousemove = function(e){
+      var l = e.clientX-disX;
+      var t = e.clientY-disY;
+      oDiv.style.left = l+'px';
+      oDiv.style.top = t+'px';
+    }
+  };
+  document.onmouseup = function(){
+    document.onmousemove = null;
+    document.onmouseup = null;
+  }
+})
+
+```
+
+## 绑定键盘信息：
+```javascript
+Vue.directive('on').keyCodes.ctrl=17
+```
+
+## watch监听数据变化：
+```javascript
+vm.$watch('dataName',cb) //浅监听
+vm.$watch('dataName',cb,{deep:true}) //深监听
+```
+
+## Vue实例的简单方法：
+- vm.$el => 就是元素
+- vm.$data => 就是数据对象
+- vm.$mount('#div') => 手动挂在到元素上
+- vm.$options => 获取到自定义属性（除data、el、methods等之外的）
+- vm.$destory => 销毁对象
+- vm.$log() => 查看当前数据状态
+
 
 ## 安装vue-cli:
 ```
@@ -84,6 +380,35 @@ To get started:
 template:html内容  
 script:js脚本(ES6)   
 style:组件样式单 
+
+###### 全局组件：
+```javascript
+<aaa></aaa>
+var Aaa = Vue.extend({
+  template:'<h3>我是标题3</h3>',
+  data(){
+    return{
+
+    }
+  }
+})
+Vue.component('aaa',Aaa)
+```
+###### 动态组件：
+```javascript
+<component :is="组件名"></component>
+new Vue({
+  ...
+  data{
+    a:'aaa'
+  },
+  components:{
+    'aaa':{
+      template: '<h2>我是aaa</h2>'
+  }
+  ...
+})
+```
 
 
 ## 往工程内安装axios
@@ -495,7 +820,8 @@ import About from '/about'
 
 
 ## 多参数路由
-路由属性：props
+- 父子组件默认无法传递数据
+- 路由属性：props => 父路由给子路由传递数据
 
 ##### 使用：
 ###### 第一步：设置router文件 (router/index.js)
@@ -527,3 +853,22 @@ export default {
 ```
 <router-link to="/user/1/usa">美国用户</router-link>
 ```
+
+## Vue动画：
+推荐animate.css
+- 第一步：先给DOM标签设置transition名称
+  `<div v-show="bSign" transition="bounce"></div>`
+- 第二步：给css设置动画
+  ```javascript
+  new Vue({
+    ...
+      transitions:{  //定义所有动画
+        bounce:{
+          enterClass:'zoomInLeft',
+          leaveClass:'zoomOutRight'
+        }
+      },
+  ...
+  })
+
+  ```
