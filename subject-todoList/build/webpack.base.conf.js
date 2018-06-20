@@ -26,6 +26,7 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': resolve('src'),
+      'vue': 'vue/dist/vue.common.js' 
     }
   },
   module: {
@@ -64,6 +65,7 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
+
     ]
   },
   node: {

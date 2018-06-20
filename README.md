@@ -382,32 +382,96 @@ script:js脚本(ES6)
 style:组件样式单 
 
 ###### 全局组件：
+- 声明：
 ```javascript
-<aaa></aaa>
-var Aaa = Vue.extend({
-  template:'<h3>我是标题3</h3>',
-  data(){
-    return{
-
-    }
-  }
-})
-Vue.component('aaa',Aaa)
+const component = {
+  template:'<div>This is a component</div>'
+}
+Vue.component('CompOne',component) //可选写法：自定义组件名（组件可以认为是类，所以大写开头）和组建模板
 ```
-###### 动态组件：
+- 使用：
 ```javascript
-<component :is="组件名"></component>
 new Vue({
-  ...
-  data{
-    a:'aaa'
-  },
-  components:{
-    'aaa':{
-      template: '<h2>我是aaa</h2>'
-  }
-  ...
+  /*components:{
+    compOne:component  也可以这么写
+  }*/ 
+  el:'#root',
+  template:'<comp-one></comp-one>'
 })
+```
+
+###### 子组件获取父组件数据：
+- 父组件发送数据： 
+  ```javascript
+  
+  template:"<div>我是局部父组件{{pMsg}}<child :parentMsg='pMsg'></child></div>",//父组件通过子组件标签<child></child>绑定:parentMsg='需要传递的数据'
+  ```
+- 子组件内需要写props属性来接受父组件传过来的数据：
+  - props方法一：`props: ['parentMsg']`
+  - props方法二：
+    ``` javascript
+    props: {
+      parentMsg: String //这里指定了字符串类型，如果类型不一 致会警告的哦
+    }
+    ```
+  - props方法三：
+    ```javascript
+    props: {
+        parentMsg : {
+            type: String,
+            default: 'sichaoyun' 
+        }
+    }
+    ```
+###### 子组件给父组件传递数据：
+- 子组件通过事件传递，父组件通过事件方法接收
+    - 子组件：**this.$emit('父组件接收的事件方法名',传递的数据)**
+    - 
+- 流程：
+    - 子组件把$emit绑定到事件（click）上 => 点击子组件=> 父组件内的子组件模板`<child>`进行接收（注意此处接收依然是子模板，与父模板无关）
+    ```javascript
+      methods: {
+        emitToParent:function() {
+          this.$emit("child-event", "我是子组件传上来的数据");
+        }
+      }
+    ```
+- 父组件接收：
+  - `<child @child-event='getFromChild'></child>`
+  ```javascript
+  template:
+    "<div>我是局部父组件{{pMsg}}<child @child-event='getFromChild'></child></div>",//  注意此时接收还是在child模板内接收
+    //...
+  methods: {
+    getFromChild:function(data) {
+      this.pMsg = data
+    }
+  ```
+
+## slot插槽：
+- 在子组件标签内放dom，不会显示，需要提前预留槽位slot，让dom插入
+```javascript
+//子组件
+child:{
+  template:"<div>我是子组件,放个插槽<slot></slot></div>"
+}
+//父组件
+parent:{
+  template:
+    "<div>我是局部父组件<child @child-event='getFromChild'><p>我是插头，我插入上面留给我的slot槽位了</p></child></div>"
+}
+```
+- 多插槽：
+```javascript
+//子组件
+child:{
+  template:"<div>我是子组件,在我肚子里放个插槽<slot name='slot2'></slot></div>"
+}
+//父组件
+parent:{
+  template:
+    "<div>我是父组件<child><p name='slot2'>我是插头2，我插入上面子组件留给我的slot槽位了</p></child></div>"
+}
 ```
 
 
@@ -563,6 +627,47 @@ export default new Router({
  <router-view/>
 ```
 
+## 路由基础：
+
+
+- 路由变换的内容在哪里展示：`<router-view></router-view>`
+
+- 如果使用 **模块化** 机制编程，导入Vue和VueRouter，要调用 `Vue.use(VueRouter)`
+
+- 可以通过`this.$router`访问路由器，通过`this.$route`访问当前路由
+- 设置子组件：
+```javascript
+// 准备子组件：
+const Home = {
+  template:"<h3>我是主页</h3>"
+}
+const News = {
+  template:"<h3>我是新闻</h3>"
+}
+const User = {
+  template: "<div>User {{ $route.params.id }}</div>"
+}
+
+const routes = [
+    { path: '/', component: Home},
+    { path: '/news', component: News},
+    { path: '/user/:id', component: User }
+]
+
+//子组件注册成路由地址：
+const router = new VueRuter({
+  routers
+})
+
+//路由公共注入整个app
+const app = new Vue({
+  router
+}).$mount('#app')
+
+```
+
+
+
 ## 动态路由：
 ##### 简介：
 动态路由是指给路由加入参数（只是参数数据变化，其他固定不变）：player/id=1 player组件传入参数不一样，显示内容也不一样
@@ -604,6 +709,7 @@ export default new Router({
 ```
 
 ###### 第二步：接收参数(Player.vue)
+**this.$route.params.uid**
 ```javascript
 <template>
   <div>

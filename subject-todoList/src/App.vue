@@ -1,59 +1,50 @@
 <template>
   <div id="app">
-    <form role="form">
-      <div class="form-group">
-        <label for="username">姓名</label>
-        <input type="text" class="form-control" v-model="username" placeholder="请输入姓名">
-      </div>
-      <div class="form-group">
-        <label for="username">年龄：</label>
-        <input type="text" class="form-control" v-model="age" placeholder="请输入年龄">
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-danger btn-xs" @click="btnClick($event)">提交</button>
-        <button type="reset" class="btn btn-primary btn-xs">清空</button>
-      </div>
-    </form>
-
-    <table class="table table-bordered text-center">
-      <tr class="text-center">
-        <th class="text-center">序号</th>
-        <th class="text-center">姓名</th>
-        <th class="text-center">年龄</th>
-        <th class="text-center">操作</th>
-      </tr>
-      <tr v-for="(item,index) in arr">
-        <td>{{index}}</td>
-        <td>{{item.username}}</td>
-        <td>{{item.age}}</td>
-        <td><button class="btn btn-primary btn-xs">删除</button></td>
-        </tr>
-      <tr>
-        <td colspan="4" v-show = "arr.length===0">暂无数据。。。</td>
-      </tr>
-    </table>
+    <parent></parent>
   </div>
 </template>
 
 <script>
-export default {
-  name: "App",
-  data: () => {
+var child = {
+  template: "<button @click='emitToParent'>我是局部子组件,放个插槽<slot></slot></button>",
+  data() {
     return {
-      username:'',
-      age:0,
-      num:0,
-      arr:[]
-
+      cMsg: 34
     };
   },
   methods: {
-    btnClick: function(e) {
-      let obj = {};
-      obj['username'] = this.username
-      obj['age'] = this.age
-      this.arr.push(obj)
+    emitToParent:function() {
+      alert(1)
+      this.$emit("child-event", "我是子组件传上来的数据");
+      console.log(this)
     }
+  }
+};
+
+var parent = {
+  template:
+    "<div>我是局部父组件{{pMsg}}<child @child-event='getFromChild'><p>我是插头，我插入了</p></child></div>", //注意此时接收还是在child模板内接收
+  data() {
+    return {
+      pMsg: 3
+    };
+  },
+  components: {
+    Child: child
+  },
+  methods: {
+    getFromChild:function(data) {
+      this.pMsg = data
+    }
+  }
+};
+export default {
+  name: "App",
+  data: () => {
+    return {};
+  },
+  components: {
+    Parent: parent
   }
 };
 </script>
