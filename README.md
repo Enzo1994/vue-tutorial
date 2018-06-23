@@ -59,12 +59,12 @@ var app3 = new Vue({
 ```
 
 - v-for循环：
-  * 数组循环：v-for =“(v,i) in arr” 
+  * 数组循环：v-for =“(v,i) in arr” :key="index"
     {{value}}
   * json循环：
     - v-for =“(v,k,i) in json“
     - {{k}} {{v}}
-  * filter：
+  * filter：(2.0取消内置filter)
     - limitBy 2 1- 取2个，从index 1开始
     - filterBy '谁' - 过滤数据，得到包含 谁 的数据
     - orderBy
@@ -135,15 +135,20 @@ headers: {'X-Custom-Header': 'foobar'}
 
 ## Vue生命周期： v-1.0
 - 钩子函数：
-  - created函数：渲染html和路由前执行-此时静态页面占位数据还未被替换
-  - mounted函数：渲染html和路由后执行-ajax或数据初始化以后，用实际数据覆盖掉占位数据以后
+  - beforeCreate函数：组件实例刚被创建
+  - created函数：实例创建完成，渲染html和路由前执行-此时静态页面占位数据还未被替换
+  - beforeMount
+  - **mounted函数挂载：渲染html和路由后执行-ajax或数据初始化以后，用实际数据覆盖掉占位数据以后**
+  - beforeUpdate函数：组件更新之前
+  - **updated函数：组件更新完毕**
+
 
 ## cloak：
 办法一：`<span v-text="msg"></span>`
 办法一：`<span v-html="msg"></span>`
 方法二：`<span v-cloak>{{msg}}</span>` + `[v-cloak]{display:none}`
 
-## computed计算属性：是属性，return的值就是计算属性的值，可以和其他属性联动
+## computed计算属性：是属性，return的值就是计算属性的值，可以和其他属性联动，别的属性发生变化，计算属性跟着发生变化
 ```javascript
 data(){
   return {
@@ -278,7 +283,7 @@ Vue.directive('drag',function(){
 
 ## 绑定键盘信息：
 ```javascript
-Vue.directive('on').keyCodes.ctrl=17
+Vue.config.keyCodes.ctrl=17
 ```
 
 ## watch监听数据变化：
@@ -372,7 +377,13 @@ To get started:
 在src下的App.vue内使用```<button class = "btn btn-primary">确定</button>```
 
 
- ## 组件:
+
+## 组件:
+
+
+###### 组建基础:
+每个模板都必须只有一个根元素
+
 ###### 组件位置:
 所有组件都在src/components文件夹下
 
@@ -399,6 +410,20 @@ new Vue({
   template:'<comp-one></comp-one>'
 })
 ```
+
+## 组件通信：
+- this.$emit this.$on
+- **父子组件同步办法：父组件每次传一个对象给子组件**
+- 单一事件管理组件通信：
+  - 通过new一个空vue实例来作为中介：
+  ```javascript
+  const Event = new Vue();
+  ```
+  - 通过Event.$emit 和 Event.$on来统一集成和分发通信数据
+  ```
+  Event.$emit(事件名称，数据)
+  Event.$on(事件名称，function(data){}.bind(this))
+  ```
 
 ###### 子组件获取父组件数据：
 - 父组件发送数据： 
@@ -961,10 +986,40 @@ export default {
 ```
 
 ## Vue动画：
+```
+<transition name='fade'
+  @before-enter="beforeEnter(el)"  //可以声明事件，回调默认el参数能拿到当前元素，可用el.style
+  @enter = "enter"
+  @after-enter="after-enter"  //进入动画执行完毕
+
+  @before-leave="beforeLeave(el)"  //离开之前
+  @leave = "leave"  //开始离开，离开过程中
+  @after-leave="after-leave"  //离开动画执行完毕 要记得还原最初样式
+  >
+  需要运动的元素
+</transition>
+
+class定义：
+.fade-enter{} //初始状态
+
+.fade-enter-active{} //最后变化成什么样
+
+.fade-leave{} //最终进入以后的状态
+
+.fade-leave-active{} //最后一步离开后的样子
+```
+- **transition 时间必须要给 1s all ease**
+
 推荐animate.css
-- 第一步：先给DOM标签设置transition名称
-  `<div v-show="bSign" transition="bounce"></div>`
-- 第二步：给css设置动画
+- 第一步：新建transition标签，把进入和离开的样式类写进去
+  <transition enter-active-class="bounceInLeft" leave-active-class="bounceOutRight">
+- 第二步：给想要的元素加入class="animated",放进transition标签
+    <transition enter-active-class="bounceInLeft" leave-active-class="bounceOutRight">
+      <p v-show ="show" class="animated"></p>
+    </transition>
+- 注：如果多个元素需要动画transition-group + :key：
+    <transition-group> <p class = "animated" v-for="(val,index) in arr" :key="index"> </p></transition-group>
+给css设置动画
   ```javascript
   new Vue({
     ...

@@ -1,0 +1,16 @@
+{
+  "name": "vueloader",
+  "version": "1.0.0",
+  "description": "`npm install webpack`\r `npm install webpack-dev-server` - 带服务器的webpack",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"webpack-dev-server --inline --hot --port 8080" 
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.12.0",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
