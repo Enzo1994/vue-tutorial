@@ -107,6 +107,7 @@ var app5 = new Vue({
           this.message = this.message.split('').reverse().join('')    
           }}})
 ```
+- **自定义组件用`@click.native="doSomethin"`加代理**
 
 - v-model双向绑定：
 ```javascript
@@ -986,7 +987,7 @@ export default {
 ```
 
 ## Vue动画：
-```
+```html
 <transition name='fade'
   @before-enter="beforeEnter(el)"  //可以声明事件，回调默认el参数能拿到当前元素，可用el.style
   @enter = "enter"
@@ -1008,28 +1009,17 @@ class定义：
 
 .fade-leave-active{} //最后一步离开后的样子
 ```
-- **transition 时间必须要给 1s all ease**
+- **transition标签 时间必须要给 1s all ease**
 
 推荐animate.css
 - 第一步：新建transition标签，把进入和离开的样式类写进去
-  <transition enter-active-class="bounceInLeft" leave-active-class="bounceOutRight">
+  `<transition enter-active-class="bounceInLeft" leave-active-class="bounceOutRight">`
 - 第二步：给想要的元素加入class="animated",放进transition标签
+    ```html
     <transition enter-active-class="bounceInLeft" leave-active-class="bounceOutRight">
       <p v-show ="show" class="animated"></p>
     </transition>
+    ```
 - 注：如果多个元素需要动画transition-group + :key：
-    <transition-group> <p class = "animated" v-for="(val,index) in arr" :key="index"> </p></transition-group>
-给css设置动画
-  ```javascript
-  new Vue({
-    ...
-      transitions:{  //定义所有动画
-        bounce:{
-          enterClass:'zoomInLeft',
-          leaveClass:'zoomOutRight'
-        }
-      },
-  ...
-  })
-
-  ```
+    `<transition-group> <p class = "animated" v-for="(val,index) in arr" :key="index"> </p></transition-group>`
+  
