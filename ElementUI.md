@@ -1,7 +1,17 @@
 # Element UI
 - 安装npm i element-ui -D==--save-dev
 - 引入 `import ElementUI from 'element-ui'`和`import 'element-ui/lib/theme-default/index.css'`
+- 安装 less 和 less-loader
+- 在webpack.config.js里添加file-loader
+  ```javascript
+  {
+      test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+      loader: 'file-loader'
+  },
+  ```
 - 使用 `Vue.use(ElementUI)`
+
+
 
 - **weboack的css-loader 也要style-loader，styleloader在前**
 - css包引入直接写在index.html里
@@ -23,9 +33,9 @@
   ```
 - 想用哪个用哪个main.js引入：
   ```javascript
-  import {Button,radio} from 'element-ui'
-  Vue.use(button)
-  Vue.use(radio)
+  import {Button,Radio} from 'element-ui'
+  Vue.use(Button)
+  Vue.use(Radio)
   ```
 
 
