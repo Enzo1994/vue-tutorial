@@ -1,6 +1,9 @@
 # 问题：
 1. webpack配置proxy跨域无效
+2. CROS CROB 资源跨域获取问题
 
+难点：
+1. 图片如果能获取到，则加载，如果不能获取，整个图片名称评分容器都删除
 ## 目录结构：
 ![目录结构](./配图/vue项目目录结构.png)
 
@@ -29,7 +32,7 @@ mockjs
 
 2. 蒙蔽浏览器
 
-**solt**
+**slot**
 实例的头部topbar，两边的图标做成插槽
 在组件留下solt插槽：
 在使用的时候标签内写solt=""
@@ -150,3 +153,12 @@ if(!this.countdownTime){
 ## cookie：
 持久化cookie ：后台设置cookie maxage
 需要设置reqUserInfo
+
+
+## css文本处理
+```css
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+```

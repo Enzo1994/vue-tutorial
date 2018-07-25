@@ -1,3 +1,6 @@
+![image](https://pic4.zhimg.com/80/08235a5dafaaba6f9418704cba12fedd_hd.jpg)
+
+
 ## 判断题：
 1. []==false为true，[]为true，{}==false =>NaN为false
     '=='会都转换成数字
