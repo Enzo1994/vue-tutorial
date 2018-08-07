@@ -38,6 +38,7 @@ mockjs
 在使用的时候标签内写solt=""
 
 
+
 ## vuex管理后台获取到的状态数据
 - store/index.js:集成
 - 存变量：store/state.js
@@ -111,8 +112,8 @@ watch:{
     }:
 }
 ```
-## this.$nextTick() //更新了数据后，执行，dom立即改变（轮播图用）
-
+## `this.$nextTick()` //更新了数据后，执行，dom立即改变（轮播图用）
+如果你要获取的元素高度是动态由数据撑起来的需要使用this.$nextTick
 
 ##父组件给子组件传数据
 父亲组件<img class = "..." :src="父组件传过来的url">
