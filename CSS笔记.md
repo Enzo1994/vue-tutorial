@@ -81,6 +81,7 @@ html中的`<img><input><textarea><select><object>`都是置换元素，这些置
 1. background-attachment:fixed可以让背景不随着滚轮滚动
 2. xx.style.backgroundColor="red"设置红色背景
 3. background-origin:content-box 让背景在内容里显示  
+4. background-size:contain 设置图标缩放到完整放进盒子
 
 ## <font color="orange">文字题：</font>
 1. `text-transform:uppercase/lowercase/capitalize` 可以设置大小写
@@ -88,6 +89,16 @@ html中的`<img><input><textarea><select><object>`都是置换元素，这些置
  ## <font color="orange">布局题：</font>
 1. box-pack  可以用于背景上放按键，不使用float或者绝对定位
 2. <font color="red">`margin/padding`的百分比是以父元素的宽度作为解析的，`margin-top/padding-top` 和 `margin-bottom/padding-bottom` 亦是如此</font>
+3. margin会有重叠情况，用bfc解决
+4. display:table-cell;vertical-aglin:middle; 垂直居中
+
 
 ## <font color="orange">边框题：</font>
 1. border-radius: 四个方位横向班级 / 四个方位纵向半径
+
+
+### 实战：
+1. 确定美工图宽度，改为640px；
+2. 加入蓝色参照线；
+3. 测量，最终尺寸除以2
+4. 用margin调整logo位置
