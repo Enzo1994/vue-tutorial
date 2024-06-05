@@ -5380,13 +5380,13 @@ var Vue = (function (exports) {
           get config() {
             return context.config;
           },
-          set config(v) {
-            {
-              warn$1(
-                `app.config cannot be replaced. Modify individual options instead.`
-              );
-            }
-          },
+          // set config(v) {
+          //   {
+          //     warn$1(
+          //       `app.config cannot be replaced. Modify individual options instead.`
+          //     );
+          //   }
+          // },
           use(plugin, ...options) {
             if (installedPlugins.has(plugin)) {
               warn$1(`Plugin has already been applied to target app.`);
@@ -5443,12 +5443,8 @@ var Vue = (function (exports) {
           },
           mount(rootContainer, isHydrate, namespace) {
             if (!isMounted) {
-              if (rootContainer.__vue_app__) {
-                warn$1(
-                  `There is already an app instance mounted on the host container.
-   If you want to mount another app on the same host container, you need to unmount the previous app by calling \`app.unmount()\` first.`
-                );
-              }
+
+              // rootComponent：根组件数据，包括setup方法、模板
               const vnode = createVNode(rootComponent, rootProps);
               vnode.appContext = context;
               if (namespace === true) {
@@ -5465,11 +5461,13 @@ var Vue = (function (exports) {
                   );
                 };
               }
-              if (isHydrate && hydrate) {
-                hydrate(vnode, rootContainer);
-              } else {
-                render(vnode, rootContainer, namespace);
-              }
+
+              // if (isHydrate && hydrate) {
+              //   hydrate(vnode, rootContainer);
+              // } else {
+              render(vnode, rootContainer, namespace);
+              // }
+
               isMounted = true;
               app._container = rootContainer;
               rootContainer.__vue_app__ = app;
@@ -5478,11 +5476,6 @@ var Vue = (function (exports) {
                 devtoolsInitApp(app, version);
               }
               return getExposeProxy(vnode.component) || vnode.component.proxy;
-            } else {
-              warn$1(
-                `App has already been mounted.
-  If you want to remount the same app, move your app creation logic into a factory function and create fresh app instances for each mount - e.g. \`const createMyApp = () => createApp(App)\``
-              );
             }
           },
           unmount() {
@@ -8621,6 +8614,7 @@ var Vue = (function (exports) {
       vnodeArgsTransformer = transformer;
     }
     const createVNodeWithArgsTransform = (...args) => {
+      debugger
       return _createVNode(
         ...vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args
       );
@@ -8743,6 +8737,7 @@ var Vue = (function (exports) {
           type
         );
       }
+      debugger
       return createBaseVNode(
         type,
         props,

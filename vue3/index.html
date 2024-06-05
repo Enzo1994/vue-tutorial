@@ -7,20 +7,35 @@
 </head>
 <body>
     <script src="./vue.global.js"></script>
-    <div id="app">{{ message }}</div>
+    <div id="app"></div>
 
     <script>
       const { createApp, ref } = Vue
     
+      debugger
       createApp({
+        components: {
+          ChildComp: { 
+            name:'childComponent',
+            template: `{{ childMsg }}child`,
+            setup() {
+              const childMsg = ref('Hello child Vue!')
+              return {
+                childMsg
+              }
+            }
+          }
+        },
+        template: `{{ message }}parent<ChildComp />`,
         setup() {
             debugger
+          
           const message = ref('Hello vue!')
           return {
             message
           }
         }
-      }).mount('#app')
+      },{propsValue: 1}).mount('#app')
     </script>
 </body>
 </html>
